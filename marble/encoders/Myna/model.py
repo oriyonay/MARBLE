@@ -211,4 +211,4 @@ class MynaEncoder(BaseEncoder):
 
         embeddings = torch.cat(chunk_outputs, dim=0).permute(1, 0, 2).contiguous()
 
-        return embeddings.unsqueeze(1)
+        return embeddings.unsqueeze(2)
