@@ -46,14 +46,17 @@ model:
       class_path: marble.encoders.Myna.model.MynaEncoder
       init_args:
         model_name: oriyonay/myna-85m
-        train_mode: freeze  # also supports full
+        train_mode: freeze
+        chunk_frames: 96
 
-    emb_transforms: []
+    emb_transforms:
+      - class_path: marble.modules.transforms.TimeAvgPool
+
     decoders:
       - class_path: marble.modules.decoders.MLPDecoder
         init_args:
           in_dim: 1536
-          out_dim: 10 # 10 genres
+          out_dim: 10
           hidden_layers: [512]
           activation_fn:
             class_path: torch.nn.ReLU
