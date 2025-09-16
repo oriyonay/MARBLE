@@ -79,5 +79,13 @@ class MynaEncoder(BaseEncoder):
             embeddings = embeddings.unsqueeze(0)
         if embeddings.ndim == 2:
             embeddings = embeddings.unsqueeze(1)
+        if embeddings.ndim == 3:
+            embeddings = embeddings.unsqueeze(1)
+
+        if embeddings.ndim != 4:
+            raise ValueError(
+                "Myna encoder outputs must be a 4D tensor of shape [batch, layers, time, "
+                f"hidden], but received {embeddings.shape}."
+            )
 
         return embeddings

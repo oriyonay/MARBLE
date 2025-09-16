@@ -209,6 +209,35 @@ class MelSpectrogram(BaseAudioTransform):
         return sample
 
 
+class PadToMultiple(BaseAudioTransform):
+    """Pad the last dimension so its length is a multiple of ``multiple``."""
+
+    def __init__(self, multiple: int) -> None:
+        super().__init__()
+        if multiple <= 0:
+            raise ValueError("multiple must be a positive integer")
+        self.multiple = multiple
+
+    def forward(self, sample: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        x = sample["input_features"]
+        if not isinstance(x, torch.Tensor):
+            raise TypeError("PadToMultiple expects a torch.Tensor input")
+
+        length = x.shape[-1]
+        if length == 0:
+            target = self.multiple
+        else:
+            target = ((length + self.multiple - 1) // self.multiple) * self.multiple
+
+        if length == target:
+            return sample
+
+        pad_amount = target - length
+
+        sample["input_features"] = F.pad(x, (0, pad_amount))
+        return sample
+
+
 ############################## Embedding Transforms ##############################
 
 
